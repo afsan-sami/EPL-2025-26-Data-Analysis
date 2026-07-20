@@ -257,7 +257,7 @@ Planned enhancements include:
 
 **Afsan Sami**
 
-Automation & MIS Executive | Data Analytics Enthusiast
+Data Analytics Enthusiast
 
 **Skills:** SQL • Python • Power BI • Excel • Statistics
 
