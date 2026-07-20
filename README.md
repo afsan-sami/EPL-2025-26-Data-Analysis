@@ -1,7 +1,6 @@
 # EPL 2025-26 Season Analysis — Rebuilt From Scratch
 
-This is the same project as the original **EPL 2024-25 Data Analysis** repo, rebuilt end‑to‑end
-for the **2025-26** season. Everything below is organized as the five steps you asked for:
+An end-to-end data analysis project for the **2025–26 Premier League season**. Everything below is organized as the five steps you asked for:
 **find data → clean it → analyze it → visualize it → comment on it.** Every file this guide
 references is included in this package and already contains real results computed from the
 actual, completed 2025-26 season (380 matches, 15 Aug 2025 → 24 May 2026).
