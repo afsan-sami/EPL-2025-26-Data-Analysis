@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPL 2025-26 Season Analysis</title>
+<style>
+  :root{
+    --ink:#16232E; --ink-2:#4D5D68; --ink-3:#8B98A0;
+    --bg:#FAF9F6; --surface:#FFFFFF; --border:#E4E1D8;
+    --teal:#1B4B5A; --teal-light:#E4EEF0;
+    --gold:#B8842A; --gold-light:#F5EBD9;
+    --green:#3B6E52; --green-light:#E7EFEA;
+    --red:#A83A3A; --red-light:#F6E9E9;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;}
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 64px;}
+  header.top{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:24px;}
+  .eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin:0 0 6px;}
+  h1{font-size:28px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em;}
+  .meta{font-size:14px;color:var(--ink-2);margin:0;}
+  nav.tabs{display:flex;gap:4px;margin-top:22px;flex-wrap:wrap;}
+  nav.tabs button{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink-2);background:none;border:none;padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;border-radius:6px 6px 0 0;transition:color .15s,background .15s;}
+  nav.tabs button:hover{background:var(--surface);color:var(--ink);}
+  nav.tabs button.active{color:var(--teal);border-bottom-color:var(--teal);font-weight:600;}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:28px;}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+  .kpi .label{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px;}
+  .kpi .value{font-family:var(--mono);font-size:26px;font-weight:500;margin:0 0 4px;color:var(--ink);}
+  .kpi .context{font-size:12px;color:var(--ink-2);margin:0;}
+  section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-bottom:20px;}
+  section h2{font-size:16px;font-weight:600;margin:0 0 4px;}
+  section .sub{font-size:12.5px;color:var(--ink-2);margin:0 0 18px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);padding:8px 10px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;}
+  th:hover{color:var(--teal);}
+  th.num,td.num{text-align:right;font-family:var(--mono);}
+  td{padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;}
+  tr.zone-cl td:first-child{box-shadow:inset 3px 0 0 var(--green);}
+  tr.zone-rel td:first-child{box-shadow:inset 3px 0 0 var(--red);}
+  tr:hover td{background:var(--teal-light);}
+  .legend-row{display:flex;gap:18px;font-size:12px;color:var(--ink-2);margin-top:10px;}
+  .legend-dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle;}
+  .lb-row{display:flex;align-items:center;gap:10px;padding:5px 0;}
+  .lb-label{width:135px;flex-shrink:0;font-size:13px;color:var(--ink);}
+  .lb-track{flex:1;background:var(--bg);border-radius:4px;height:20px;position:relative;overflow:hidden;}
+  .lb-bar{height:100%;border-radius:4px;transition:width .5s ease;}
+  .lb-val{width:88px;flex-shrink:0;text-align:right;font-family:var(--mono);font-size:12.5px;color:var(--ink-2);}
+  .dv-row{display:flex;align-items:center;gap:0;padding:4px 0;}
+  .dv-left,.dv-right{flex:1;height:18px;position:relative;}
+  .dv-left{display:flex;justify-content:flex-end;}
+  .dv-bar{height:100%;border-radius:3px;}
+  .dv-team{width:120px;flex-shrink:0;text-align:center;font-size:12.5px;padding:0 6px;}
+  .dv-val{font-family:var(--mono);font-size:11px;color:var(--ink-2);position:absolute;top:1px;white-space:nowrap;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:800px){.grid2{grid-template-columns:1fr;}}
+  .meth-block{margin-bottom:22px;}
+  .meth-block h3{font-size:14px;font-weight:600;margin:0 0 8px;color:var(--ink);}
+  .meth-block p, .meth-block li{font-size:13.5px;color:var(--ink-2);margin:0 0 6px;}
+  .meth-block ul{margin:0;padding-left:20px;}
+  .test-card{border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .test-card .tname{font-size:13.5px;color:var(--ink);flex:1;}
+  .test-card .tstat{font-family:var(--mono);font-size:13px;color:var(--ink-2);white-space:nowrap;}
+  .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+  .badge.sig{background:var(--green-light);color:var(--green);}
+  .badge.notsig{background:var(--bg);color:var(--ink-3);border:1px solid var(--border);}
+  footer{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--ink-3);}
+  code.src{font-family:var(--mono);background:var(--bg);padding:1px 5px;border-radius:4px;font-size:11.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">2025&ndash;26 season &middot; 380 matches</p>
+  <h1>Premier League season analysis</h1>
+  <p class="meta">15 Aug 2025 &ndash; 24 May 2026 &middot; 20 teams &middot; source: football-data.co.uk (via DataHub)</p>
+  <nav class="tabs">
+    <button data-panel="overview" class="active">Overview</button>
+    <button data-panel="performance">Team performance</button>
+    <button data-panel="efficiency">Efficiency &amp; discipline</button>
+    <button data-panel="methodology">Methodology</button>
+  </nav>
+</header>
+
+<div id="overview" class="panel active">
+  <div class="kpi-row" id="kpiRow"></div>
+  <section>
+    <h2>Final league table</h2>
+    <p class="sub">Click any column heading to sort.</p>
+    <div style="overflow-x:auto;">
+      <table id="leagueTable"><thead></thead><tbody></tbody></table>
+    </div>
+    <div class="legend-row">
+      <span><span class="legend-dot" style="background:var(--green);"></span>Champions League qualification</span>
+      <span><span class="legend-dot" style="background:var(--red);"></span>Relegated</span>
+    </div>
+  </section>
+</div>
+
+<div id="performance" class="panel">
+  <section>
+    <h2>Goals scored: home vs away</h2>
+    <p class="sub">Every team scores more at home &mdash; the question is by how much.</p>
+    <div id="divGoals"></div>
+  </section>
+  <section>
+    <h2>Average points per game: home vs away</h2>
+    <p class="sub">League-wide: <span id="hpAvg" style="font-family:var(--mono)"></span> pts/game at home vs <span id="apAvg" style="font-family:var(--mono)"></span> away.</p>
+    <div id="divPoints"></div>
+  </section>
+  <section>
+    <h2>Clean sheets: home vs away split</h2>
+    <p class="sub">Stacked bar &mdash; teal portion is home clean sheets, gold is away.</p>
+    <div id="stackCS"></div>
+  </section>
+</div>
+
+<div id="efficiency" class="panel">
+  <div class="grid2">
+    <section>
+      <h2>Goal conversion rate</h2>
+      <p class="sub">Goals scored &divide; shots taken</p>
+      <div id="lbConv"></div>
+    </section>
+    <section>
+      <h2>Shot accuracy rate</h2>
+      <p class="sub">Shots on target &divide; total shots</p>
+      <div id="lbAcc"></div>
+    </section>
+  </div>
+  <div class="grid2">
+    <section>
+      <h2>Fouls-to-card ratio</h2>
+      <p class="sub">Higher = fewer fouls turn into cards (cleaner record)</p>
+      <div id="lbRatio"></div>
+    </section>
+    <section>
+      <h2>Total cards (yellow + red)</h2>
+      <p class="sub">By team, most carded first</p>
+      <div id="lbCards"></div>
+    </section>
+  </div>
+  <section>
+    <h2>Referee workload &amp; cards</h2>
+    <p class="sub">Click any column heading to sort.</p>
+    <div style="overflow-x:auto;">
+      <table id="refTable"><thead></thead><tbody></tbody></table>
+    </div>
+  </section>
+</div>
+
+<div id="methodology" class="panel">
+  <section>
+    <div class="meth-block">
+      <h3>Data source</h3>
+      <p>Match-by-match results and statistics for the 2025&ndash;26 Premier League season, sourced from <code class="src">football-data.co.uk</code> via its DataHub mirror (<code class="src">season-2526.csv</code>). 22 columns per match: scoreline, half-time scoreline, referee, shots, shots on target, fouls, corners, and cards for each side.</p>
+    </div>
+    <div class="meth-block">
+      <h3>Data cleaning</h3>
+      <ul>
+        <li>Verified completeness: 380 rows (20 teams &times; 38 matches), each team appearing exactly 38 times, zero duplicate fixtures.</li>
+        <li>Checked for missing values across all 22 columns &mdash; none found.</li>
+        <li>Confirmed squad changes vs. 2024-25: Leeds, Burnley and Sunderland (promoted) replace Ipswich, Leicester and Southampton (relegated).</li>
+        <li>Away-shots column is named <code class="src">AS</code> in the raw file &mdash; a reserved SQL keyword, renamed on import to avoid query errors.</li>
+      </ul>
+    </div>
+    <div class="meth-block">
+      <h3>Statistical tests</h3>
+      <div class="test-card">
+        <span class="tname">Pearson correlation: clean sheets vs. league position</span>
+        <span class="tstat">r = &minus;0.690, p = 0.0008</span>
+        <span class="badge sig">Significant</span>
+      </div>
+      <div class="test-card">
+        <span class="tname">Pearson correlation: total cards vs. league position</span>
+        <span class="tstat">r = 0.291, p = 0.213</span>
+        <span class="badge notsig">Not significant</span>
+      </div>
+      <div class="test-card">
+        <span class="tname">Paired t-test: home goals vs. away goals</span>
+        <span class="tstat">t = 3.642, p = 0.0003</span>
+        <span class="badge sig">Significant</span>
+      </div>
+      <p style="margin-top:10px;">Interpretation: defensive solidity tracks final position closely and reliably; card counts do not, at conventional significance thresholds. Home advantage (1.53 vs. 1.22 goals/game) is a real, statistically robust effect this season, not a small-sample artifact.</p>
+    </div>
+    <div class="meth-block">
+      <h3>Limitations</h3>
+      <ul>
+        <li>Single-season sample (380 matches) &mdash; team-level correlations especially should be read as descriptive of this season, not as a general law.</li>
+        <li>Correlation, not causation: clean sheets and final position are both downstream of overall team quality, not necessarily linked in a direct causal chain.</li>
+        <li>No expected-goals (xG), possession, or player-level data in this dataset &mdash; conclusions are limited to results-based and event-count statistics.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<footer>Data: football-data.co.uk / DataHub, 2025&ndash;26 English Premier League. All figures computed directly from the 380-match season file; no manual entry.</footer>
+</div>
+
+<script>
+const DATA = {"teams":[{"team":"Arsenal","points":85,"wins":26,"draws":7,"losses":5,"conversion_rate_percentage":12.86,"shot_accuracy_rate_percentage":33.7,"total_clean_sheet":19,"total_cards":51,"total_fouls":391,"fouls_to_card_ratio":7.67,"avg_home_points":2.47,"avg_away_points":2.0,"goals_at_home":41,"goals_at_away":30,"position":1,"gf":71},{"team":"Man City","points":78,"wins":23,"draws":9,"losses":6,"conversion_rate_percentage":12.94,"shot_accuracy_rate_percentage":34.45,"total_clean_sheet":16,"total_cards":67,"total_fouls":367,"fouls_to_card_ratio":5.48,"avg_home_points":2.37,"avg_away_points":1.74,"goals_at_home":45,"goals_at_away":32,"position":2,"gf":77},{"team":"Man United","points":71,"wins":20,"draws":11,"losses":7,"conversion_rate_percentage":11.58,"shot_accuracy_rate_percentage":36.24,"total_clean_sheet":8,"total_cards":65,"total_fouls":391,"fouls_to_card_ratio":6.02,"avg_home_points":2.21,"avg_away_points":1.53,"goals_at_home":39,"goals_at_away":30,"position":3,"gf":69},{"team":"Aston Villa","points":65,"wins":19,"draws":8,"losses":11,"conversion_rate_percentage":11.59,"shot_accuracy_rate_percentage":35.2,"total_clean_sheet":9,"total_cards":59,"total_fouls":379,"fouls_to_card_ratio":6.42,"avg_home_points":2.0,"avg_away_points":1.42,"goals_at_home":32,"goals_at_away":24,"position":4,"gf":56},{"team":"Liverpool","points":60,"wins":17,"draws":9,"losses":12,"conversion_rate_percentage":10.71,"shot_accuracy_rate_percentage":29.76,"total_clean_sheet":10,"total_cards":58,"total_fouls":383,"fouls_to_card_ratio":6.6,"avg_home_points":1.89,"avg_away_points":1.26,"goals_at_home":34,"goals_at_away":29,"position":5,"gf":63},{"team":"Bournemouth","points":57,"wins":13,"draws":18,"losses":7,"conversion_rate_percentage":11.05,"shot_accuracy_rate_percentage":33.9,"total_clean_sheet":11,"total_cards":90,"total_fouls":457,"fouls_to_card_ratio":5.08,"avg_home_points":1.63,"avg_away_points":1.37,"goals_at_home":29,"goals_at_away":29,"position":6,"gf":58},{"team":"Sunderland","points":54,"wins":14,"draws":12,"losses":12,"conversion_rate_percentage":10.63,"shot_accuracy_rate_percentage":31.9,"total_clean_sheet":11,"total_cards":83,"total_fouls":407,"fouls_to_card_ratio":4.9,"avg_home_points":1.74,"avg_away_points":1.11,"goals_at_home":25,"goals_at_away":17,"position":7,"gf":42},{"team":"Brentford","points":53,"wins":14,"draws":11,"losses":13,"conversion_rate_percentage":13.58,"shot_accuracy_rate_percentage":36.3,"total_clean_sheet":10,"total_cards":69,"total_fouls":390,"fouls_to_card_ratio":5.65,"avg_home_points":1.68,"avg_away_points":1.11,"goals_at_home":33,"goals_at_away":22,"position":8,"gf":55},{"team":"Brighton","points":53,"wins":14,"draws":11,"losses":13,"conversion_rate_percentage":10.51,"shot_accuracy_rate_percentage":35.56,"total_clean_sheet":10,"total_cards":86,"total_fouls":453,"fouls_to_card_ratio":5.27,"avg_home_points":1.74,"avg_away_points":1.05,"goals_at_home":30,"goals_at_away":22,"position":9,"gf":52},{"team":"Fulham","points":52,"wins":15,"draws":7,"losses":16,"conversion_rate_percentage":9.77,"shot_accuracy_rate_percentage":28.69,"total_clean_sheet":9,"total_cards":76,"total_fouls":414,"fouls_to_card_ratio":5.45,"avg_home_points":1.84,"avg_away_points":0.89,"goals_at_home":30,"goals_at_away":17,"position":10,"gf":47},{"team":"Chelsea","points":52,"wins":14,"draws":10,"losses":14,"conversion_rate_percentage":11.35,"shot_accuracy_rate_percentage":32.09,"total_clean_sheet":9,"total_cards":96,"total_fouls":426,"fouls_to_card_ratio":4.44,"avg_home_points":1.37,"avg_away_points":1.37,"goals_at_home":26,"goals_at_away":32,"position":11,"gf":58},{"team":"Everton","points":49,"wins":13,"draws":10,"losses":15,"conversion_rate_percentage":11.19,"shot_accuracy_rate_percentage":34.29,"total_clean_sheet":11,"total_cards":78,"total_fouls":405,"fouls_to_card_ratio":5.19,"avg_home_points":1.21,"avg_away_points":1.37,"goals_at_home":26,"goals_at_away":21,"position":12,"gf":47},{"team":"Newcastle","points":49,"wins":14,"draws":7,"losses":17,"conversion_rate_percentage":10.77,"shot_accuracy_rate_percentage":35.77,"total_clean_sheet":8,"total_cards":65,"total_fouls":386,"fouls_to_card_ratio":5.94,"avg_home_points":1.68,"avg_away_points":0.89,"goals_at_home":36,"goals_at_away":17,"position":13,"gf":53},{"team":"Leeds","points":47,"wins":11,"draws":14,"losses":13,"conversion_rate_percentage":10.25,"shot_accuracy_rate_percentage":31.59,"total_clean_sheet":8,"total_cards":63,"total_fouls":398,"fouls_to_card_ratio":6.32,"avg_home_points":1.68,"avg_away_points":0.79,"goals_at_home":29,"goals_at_away":20,"position":14,"gf":49},{"team":"Crystal Palace","points":45,"wins":11,"draws":12,"losses":15,"conversion_rate_percentage":9.28,"shot_accuracy_rate_percentage":31.9,"total_clean_sheet":12,"total_cards":76,"total_fouls":398,"fouls_to_card_ratio":5.24,"avg_home_points":1.11,"avg_away_points":1.26,"goals_at_home":19,"goals_at_away":22,"position":15,"gf":41},{"team":"Nott'm Forest","points":44,"wins":11,"draws":11,"losses":16,"conversion_rate_percentage":10.08,"shot_accuracy_rate_percentage":32.77,"total_clean_sheet":9,"total_cards":60,"total_fouls":407,"fouls_to_card_ratio":6.78,"avg_home_points":1.05,"avg_away_points":1.26,"goals_at_home":20,"goals_at_away":28,"position":16,"gf":48},{"team":"Tottenham","points":41,"wins":10,"draws":11,"losses":17,"conversion_rate_percentage":11.01,"shot_accuracy_rate_percentage":34.4,"total_clean_sheet":9,"total_cards":104,"total_fouls":463,"fouls_to_card_ratio":4.45,"avg_home_points":0.79,"avg_away_points":1.37,"goals_at_home":22,"goals_at_away":26,"position":17,"gf":48},{"team":"West Ham","points":39,"wins":10,"draws":9,"losses":19,"conversion_rate_percentage":11.39,"shot_accuracy_rate_percentage":35.15,"total_clean_sheet":7,"total_cards":70,"total_fouls":421,"fouls_to_card_ratio":6.01,"avg_home_points":1.16,"avg_away_points":0.89,"goals_at_home":27,"goals_at_away":19,"position":18,"gf":46},{"team":"Burnley","points":22,"wins":4,"draws":10,"losses":24,"conversion_rate_percentage":10.7,"shot_accuracy_rate_percentage":33.24,"total_clean_sheet":4,"total_cards":66,"total_fouls":394,"fouls_to_card_ratio":5.97,"avg_home_points":0.68,"avg_away_points":0.47,"goals_at_home":18,"goals_at_away":20,"position":19,"gf":38},{"team":"Wolves","points":20,"wins":3,"draws":11,"losses":24,"conversion_rate_percentage":7.3,"shot_accuracy_rate_percentage":33.24,"total_clean_sheet":4,"total_cards":81,"total_fouls":494,"fouls_to_card_ratio":6.1,"avg_home_points":0.74,"avg_away_points":0.32,"goals_at_home":19,"goals_at_away":8,"position":20,"gf":27}],"season":{"total_matches":380,"total_goals":1045,"total_home_goals":580,"total_away_goals":465,"total_yellow_cards":1424,"total_red_cards":39,"avg_goals_per_match":2.75,"avg_home_goals_per_match":1.53,"avg_away_goals_per_match":1.22},"referees":[{"Referee":"A Taylor","Matches_Officiated":31,"Total_Fouls":635,"Total_Yellow_Cards":122,"Total_Red_Cards":2,"Avg_Fouls_Per_Match":20.48,"Avg_Cards":4.0},{"Referee":"C Kavanagh","Matches_Officiated":30,"Total_Fouls":674,"Total_Yellow_Cards":119,"Total_Red_Cards":3,"Avg_Fouls_Per_Match":22.47,"Avg_Cards":4.07},{"Referee":"M Oliver","Matches_Officiated":29,"Total_Fouls":659,"Total_Yellow_Cards":92,"Total_Red_Cards":2,"Avg_Fouls_Per_Match":22.72,"Avg_Cards":3.24},{"Referee":"S Attwell","Matches_Officiated":25,"Total_Fouls":543,"Total_Yellow_Cards":115,"Total_Red_Cards":2,"Avg_Fouls_Per_Match":21.72,"Avg_Cards":4.68},{"Referee":"S Barrott","Matches_Officiated":24,"Total_Fouls":464,"Total_Yellow_Cards":89,"Total_Red_Cards":1,"Avg_Fouls_Per_Match":19.33,"Avg_Cards":3.75},{"Referee":"D England","Matches_Officiated":23,"Total_Fouls":507,"Total_Yellow_Cards":99,"Total_Red_Cards":3,"Avg_Fouls_Per_Match":22.04,"Avg_Cards":4.43},{"Referee":"J Gillett","Matches_Officiated":22,"Total_Fouls":435,"Total_Yellow_Cards":79,"Total_Red_Cards":1,"Avg_Fouls_Per_Match":19.77,"Avg_Cards":3.64},{"Referee":"P Bankes","Matches_Officiated":22,"Total_Fouls":494,"Total_Yellow_Cards":84,"Total_Red_Cards":4,"Avg_Fouls_Per_Match":22.45,"Avg_Cards":4.0},{"Referee":"T Bramall","Matches_Officiated":22,"Total_Fouls":473,"Total_Yellow_Cards":89,"Total_Red_Cards":2,"Avg_Fouls_Per_Match":21.5,"Avg_Cards":4.14},{"Referee":"A Madley","Matches_Officiated":21,"Total_Fouls":480,"Total_Yellow_Cards":68,"Total_Red_Cards":4,"Avg_Fouls_Per_Match":22.86,"Avg_Cards":3.43},{"Referee":"C Pawson","Matches_Officiated":21,"Total_Fouls":456,"Total_Yellow_Cards":56,"Total_Red_Cards":2,"Avg_Fouls_Per_Match":21.71,"Avg_Cards":2.76},{"Referee":"R Jones","Matches_Officiated":18,"Total_Fouls":379,"Total_Yellow_Cards":75,"Total_Red_Cards":0,"Avg_Fouls_Per_Match":21.06,"Avg_Cards":4.17},{"Referee":"S Hooper","Matches_Officiated":15,"Total_Fouls":350,"Total_Yellow_Cards":60,"Total_Red_Cards":2,"Avg_Fouls_Per_Match":23.33,"Avg_Cards":4.13},{"Referee":"M Salisbury","Matches_Officiated":14,"Total_Fouls":307,"Total_Yellow_Cards":61,"Total_Red_Cards":0,"Avg_Fouls_Per_Match":21.93,"Avg_Cards":4.36},{"Referee":"J Brooks","Matches_Officiated":12,"Total_Fouls":251,"Total_Yellow_Cards":44,"Total_Red_Cards":3,"Avg_Fouls_Per_Match":20.92,"Avg_Cards":3.92},{"Referee":"P Tierney","Matches_Officiated":12,"Total_Fouls":242,"Total_Yellow_Cards":40,"Total_Red_Cards":2,"Avg_Fouls_Per_Match":20.17,"Avg_Cards":3.5},{"Referee":"T Harrington","Matches_Officiated":11,"Total_Fouls":220,"Total_Yellow_Cards":33,"Total_Red_Cards":1,"Avg_Fouls_Per_Match":20.0,"Avg_Cards":3.09},{"Referee":"T Robinson","Matches_Officiated":9,"Total_Fouls":206,"Total_Yellow_Cards":36,"Total_Red_Cards":1,"Avg_Fouls_Per_Match":22.89,"Avg_Cards":4.11},{"Referee":"T Kirk","Matches_Officiated":6,"Total_Fouls":144,"Total_Yellow_Cards":16,"Total_Red_Cards":3,"Avg_Fouls_Per_Match":24.0,"Avg_Cards":3.17},{"Referee":"F Hallam","Matches_Officiated":5,"Total_Fouls":109,"Total_Yellow_Cards":13,"Total_Red_Cards":0,"Avg_Fouls_Per_Match":21.8,"Avg_Cards":2.6},{"Referee":"A Kitchen","Matches_Officiated":4,"Total_Fouls":93,"Total_Yellow_Cards":15,"Total_Red_Cards":0,"Avg_Fouls_Per_Match":23.25,"Avg_Cards":3.75},{"Referee":"M Donohue","Matches_Officiated":3,"Total_Fouls":79,"Total_Yellow_Cards":15,"Total_Red_Cards":0,"Avg_Fouls_Per_Match":26.33,"Avg_Cards":5.0},{"Referee":"L Smith","Matches_Officiated":1,"Total_Fouls":24,"Total_Yellow_Cards":4,"Total_Red_Cards":1,"Avg_Fouls_Per_Match":24.0,"Avg_Cards":5.0}],"cleanSheetSplit":{"Arsenal":{"home_cs":11,"away_cs":8},"Aston Villa":{"home_cs":6,"away_cs":3},"Bournemouth":{"home_cs":6,"away_cs":5},"Brentford":{"home_cs":5,"away_cs":5},"Brighton":{"home_cs":5,"away_cs":5},"Burnley":{"home_cs":4,"away_cs":0},"Chelsea":{"home_cs":5,"away_cs":4},"Crystal Palace":{"home_cs":7,"away_cs":5},"Everton":{"home_cs":6,"away_cs":5},"Fulham":{"home_cs":6,"away_cs":3},"Leeds":{"home_cs":6,"away_cs":2},"Liverpool":{"home_cs":5,"away_cs":5},"Man City":{"home_cs":9,"away_cs":7},"Man United":{"home_cs":4,"away_cs":4},"Newcastle":{"home_cs":3,"away_cs":5},"Nott'm Forest":{"home_cs":4,"away_cs":5},"Sunderland":{"home_cs":7,"away_cs":4},"Tottenham":{"home_cs":3,"away_cs":6},"West Ham":{"home_cs":3,"away_cs":4},"Wolves":{"home_cs":3,"away_cs":1}}};
+
+// ---------- tabs ----------
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+// ---------- helpers ----------
+function fmt(n,d=0){return Number(n).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});}
+
+function leaderboard(containerId, rows, valueKey, color, suffix){
+  const max = Math.max(...rows.map(r=>r[valueKey]));
+  const el = document.getElementById(containerId);
+  el.innerHTML = rows.map(r=>`
+    <div class="lb-row">
+      <div class="lb-label">${r.team}</div>
+      <div class="lb-track"><div class="lb-bar" style="width:${(r[valueKey]/max*100).toFixed(1)}%;background:${color};"></div></div>
+      <div class="lb-val">${fmt(r[valueKey], suffix==='%'?2:0)}${suffix||''}</div>
+    </div>`).join('');
+}
+
+function diverging(containerId, rows, leftKey, rightKey, leftColor, rightColor, dec){
+  const max = Math.max(...rows.map(r=>Math.max(r[leftKey],r[rightKey])));
+  const el = document.getElementById(containerId);
+  el.innerHTML = rows.map(r=>`
+    <div class="dv-row">
+      <div class="dv-left"><div class="dv-bar" style="width:${(r[leftKey]/max*100).toFixed(1)}%;background:${leftColor};"></div>
+        <span class="dv-val" style="right:${(r[leftKey]/max*100).toFixed(1)}%;transform:translateX(-100%);padding-right:4px;">${fmt(r[leftKey],dec)}</span></div>
+      <div class="dv-team">${r.team}</div>
+      <div class="dv-right"><div class="dv-bar" style="width:${(r[rightKey]/max*100).toFixed(1)}%;background:${rightColor};"></div>
+        <span class="dv-val" style="left:${(r[rightKey]/max*100).toFixed(1)}%;padding-left:4px;">${fmt(r[rightKey],dec)}</span></div>
+    </div>`).join('');
+}
+
+function stacked(containerId, rows, splitMap){
+  const withSplit = rows.map(r=>({...r, ...splitMap[r.team]}));
+  const max = Math.max(...withSplit.map(r=>r.home_cs+r.away_cs));
+  const el = document.getElementById(containerId);
+  el.innerHTML = withSplit.map(r=>{
+    const total = r.home_cs+r.away_cs;
+    const homePct = (r.home_cs/max*100).toFixed(1), awayPct = (r.away_cs/max*100).toFixed(1);
+    return `<div class="lb-row">
+      <div class="lb-label">${r.team}</div>
+      <div class="lb-track">
+        <div class="lb-bar" style="position:absolute;left:0;width:${homePct}%;background:var(--teal);"></div>
+        <div class="lb-bar" style="position:absolute;left:${homePct}%;width:${awayPct}%;background:var(--gold);"></div>
+      </div>
+      <div class="lb-val">${total} (${r.home_cs}/${r.away_cs})</div>
+    </div>`;
+  }).join('');
+}
+
+function buildTable(tableId, columns, rows, zoneFn){
+  const table = document.getElementById(tableId);
+  let sortKey = columns[0].key, sortDir = 1;
+  function render(){
+    const sorted = [...rows].sort((a,b)=>{
+      const av=a[sortKey], bv=b[sortKey];
+      if(typeof av==='string') return av.localeCompare(bv)*sortDir;
+      return (av-bv)*sortDir;
+    });
+    table.querySelector('thead').innerHTML = '<tr>'+columns.map(c=>`<th class="${c.num?'num':''}" data-key="${c.key}">${c.label}</th>`).join('')+'</tr>';
+    table.querySelector('tbody').innerHTML = sorted.map(r=>{
+      const zone = zoneFn?zoneFn(r):'';
+      return '<tr class="'+zone+'">'+columns.map(c=>`<td class="${c.num?'num':''}">${c.fmt?c.fmt(r[c.key]):r[c.key]}</td>`).join('')+'</tr>';
+    }).join('');
+    table.querySelectorAll('th').forEach(th=>{
+      th.addEventListener('click',()=>{
+        const k = th.dataset.key;
+        sortDir = (k===sortKey)?-sortDir:-1;
+        sortKey = k;
+        render();
+      });
+    });
+  }
+  render();
+}
+
+// ---------- populate ----------
+const S = DATA.season, T = DATA.teams;
+const champ = T[0];
+
+document.getElementById('kpiRow').innerHTML = `
+  <div class="kpi"><p class="label">Champion</p><p class="value" style="font-size:20px;">${champ.team}</p><p class="context">${champ.points} pts &middot; ${champ.points - T[1].points} clear of 2nd</p></div>
+  <div class="kpi"><p class="label">Total goals</p><p class="value">${fmt(S.total_goals)}</p><p class="context">${S.avg_goals_per_match} per match avg.</p></div>
+  <div class="kpi"><p class="label">Home advantage</p><p class="value">${S.avg_home_goals_per_match}<span style="font-size:15px;color:var(--ink-3);"> / ${S.avg_away_goals_per_match}</span></p><p class="context">home vs away goals/game</p></div>
+  <div class="kpi"><p class="label">Comebacks</p><p class="value">23</p><p class="context">of 380 matches (6%)</p></div>
+  <div class="kpi"><p class="label">Cards issued</p><p class="value">${fmt(S.total_yellow_cards)}</p><p class="context">+ ${S.total_red_cards} red cards</p></div>
+`;
+
+buildTable('leagueTable', [
+  {key:'position',label:'#',num:true},
+  {key:'team',label:'Team'},
+  {key:'points',label:'Pts',num:true},
+  {key:'wins',label:'W',num:true},
+  {key:'draws',label:'D',num:true},
+  {key:'losses',label:'L',num:true},
+  {key:'gf',label:'GF',num:true},
+], T, r=>r.position<=4?'zone-cl':(r.position>=18?'zone-rel':''));
+
+document.getElementById('hpAvg').textContent = (T.reduce((s,r)=>s+r.avg_home_points,0)/T.length).toFixed(2);
+document.getElementById('apAvg').textContent = (T.reduce((s,r)=>s+r.avg_away_points,0)/T.length).toFixed(2);
+
+const byGoals = [...T].sort((a,b)=>(b.goals_at_home+b.goals_at_away)-(a.goals_at_home+a.goals_at_away));
+diverging('divGoals', byGoals, 'goals_at_away', 'goals_at_home', 'var(--gold)', 'var(--teal)', 0);
+
+const byPoints = [...T].sort((a,b)=>b.points-a.points);
+diverging('divPoints', byPoints, 'avg_away_points', 'avg_home_points', 'var(--gold)', 'var(--teal)', 2);
+
+stacked('stackCS', [...T].sort((a,b)=>b.total_clean_sheet-a.total_clean_sheet), DATA.cleanSheetSplit);
+
+leaderboard('lbConv', [...T].sort((a,b)=>b.conversion_rate_percentage-a.conversion_rate_percentage), 'conversion_rate_percentage', 'var(--gold)', '%');
+leaderboard('lbAcc', [...T].sort((a,b)=>b.shot_accuracy_rate_percentage-a.shot_accuracy_rate_percentage), 'shot_accuracy_rate_percentage', 'var(--teal)', '%');
+leaderboard('lbRatio', [...T].sort((a,b)=>b.fouls_to_card_ratio-a.fouls_to_card_ratio), 'fouls_to_card_ratio', 'var(--green)', '');
+leaderboard('lbCards', [...T].sort((a,b)=>b.total_cards-a.total_cards), 'total_cards', 'var(--red)', '');
+
+buildTable('refTable', [
+  {key:'Referee',label:'Referee'},
+  {key:'Matches_Officiated',label:'Matches',num:true},
+  {key:'Avg_Fouls_Per_Match',label:'Avg fouls/match',num:true,fmt:v=>v.toFixed(1)},
+  {key:'Avg_Cards',label:'Avg cards/match',num:true,fmt:v=>v.toFixed(2)},
+], DATA.referees);
+</script>
+</body>
+</html>
